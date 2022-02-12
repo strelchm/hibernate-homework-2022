@@ -1,13 +1,15 @@
 package ru.hh.school.entity;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-//TODO: оформите entity
+@Entity
 public class Employer {
-
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Integer id;
 
   private String companyName;
@@ -16,6 +18,7 @@ public class Employer {
   // https://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#basic-datetime-java8
   private LocalDateTime creationTime;
 
+  @OneToMany(mappedBy = "employer")
   private List<Vacancy> vacancies = new ArrayList<>();
 
   private LocalDateTime blockTime;
