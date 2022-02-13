@@ -1,24 +1,23 @@
 package ru.hh.school.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-//TODO: оформите entity
+@Entity
 public class Vacancy {
 
+  @Id
+  @Column(name = "vacancy_id", columnDefinition = "serial")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @ManyToOne
+  @JoinColumn(name = "employer_id")
   private Employer employer;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "area_id")
   private Area area;
 
   private String title;
@@ -90,17 +89,21 @@ public class Vacancy {
     this.archivingTime = archivingTime;
   }
 
+  public LocalDateTime getCreationTime() {
+    return creationTime;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Vacancy vacancy = (Vacancy) o;
-    return Objects.equals(id, vacancy.id);
+    return Objects.equals(employer.getId(), vacancy.getEmployer().getId()) && Objects.equals(creationTime, vacancy.getCreationTime());
   }
 
   @Override
   public int hashCode() {
-    return 17;
+    return Objects.hash(employer.getId(), creationTime); // https://vladmihalcea.com/hibernate-facts-equals-and-hashcode/
   }
 
 }

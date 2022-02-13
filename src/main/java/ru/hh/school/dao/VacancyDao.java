@@ -9,13 +9,16 @@ public class VacancyDao extends GenericDao{
     super(sessionFactory);
   }
 
+  /**
+   * https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/
+   * @param area
+   * @return ru.hh.school.employers.StatisticsDto
+   */
   public StatisticsDto getSalaryStatistics(Area area){
-    // ToDo дополните запрос, чтобы возвращался ru.hh.school.employers.StatisticsDto
-    // https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/
     return getSession().createQuery(
-        "SELECT count(v.id), min(v.compensationFrom), max(v.compensationTo) " +
-            "FROM Vacancy v WHERE v.area = :area", StatisticsDto.class)
-        .setParameter("area", area)
-        .getSingleResult();
+      "SELECT new ru.hh.school.employers.StatisticsDto(COUNT(v.id), MIN(v.compensationFrom), MAX(v.compensationTo))" +
+           " FROM Vacancy v WHERE v.area = :area", StatisticsDto.class)
+      .setParameter("area", area)
+      .getSingleResult();
   }
 }

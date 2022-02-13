@@ -10,16 +10,26 @@ public class EmployerDao extends GenericDao {
   }
 
   /**
-   * TODO: здесь нужен метод, позволяющий сразу загрузить вакасии, связанные с работодателем и в некоторых случаях
-   * избежать org.hibernate.LazyInitializationException
-   * Также в запрос должен передаваться параметр employerId
+   * Загрузка вакансий, связанных с работодателем (и в некоторых случаях
+   * избежание org.hibernate.LazyInitializationException)
+   * @param employerId
    * <p>
    * https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/
    */
   public Employer getEager(int employerId) {
     return getSession()
-        .createQuery("from Employer employer", Employer.class)
-        .getSingleResult();
+      .createQuery("SELECT empl FROM Employer empl LEFT JOIN FETCH empl.vacancies WHERE empl.id = :employerId", Employer.class)
+      .setParameter("employerId", employerId)
+      .getSingleResult();
   }
 
+  /**
+   * "merge" operation generates 1 select and 1 update. It can be optimized to 1 update when using the Hibernate-specific
+   * "session update" operation
+   * https://vladmihalcea.com/how-to-optimize-the-merge-operation-using-update-while-batching-with-jpa-and-hibernate/
+   * getSession().merge(employer);
+   */
+  public void refresh(Employer employer) {
+    getSession().update(employer);
+  }
 }
