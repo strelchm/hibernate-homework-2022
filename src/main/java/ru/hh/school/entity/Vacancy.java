@@ -98,12 +98,12 @@ public class Vacancy {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Vacancy vacancy = (Vacancy) o;
-    return Objects.equals(employer.getId(), vacancy.getEmployer().getId()) && Objects.equals(creationTime, vacancy.getCreationTime());
+    return Objects.equals(employer, vacancy.getEmployer()) && Objects.equals(creationTime, vacancy.getCreationTime());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(employer.getId(), creationTime); // https://vladmihalcea.com/hibernate-facts-equals-and-hashcode/
+    return Objects.hash(employer, creationTime); // https://vladmihalcea.com/hibernate-facts-equals-and-hashcode/
   }
 
 }
